@@ -1,0 +1,2 @@
+class ModelGrantPermissions:
+    pass
