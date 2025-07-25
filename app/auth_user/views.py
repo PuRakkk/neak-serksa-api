@@ -1,6 +1,7 @@
-from app.core.views import CoreCreateViewSet, CoreRetrieveViewSet
-from app.auth_user.models import User
-from app.auth_user.serializers import UserSerializer
+from app.base.models import BaseImageFile
+from app.core.views import CoreCreateViewSet, CoreRetrieveViewSet, CoreUpdateViewSet
+from app.auth_user.models import User, UserProfile
+from app.auth_user.serializers import UserProfileSerializer, UserSerializer
 from django.db import transaction
 from rest_framework.response import Response
 from app.services.mail_sender import send_single_email
@@ -136,3 +137,32 @@ class GetUserInfoView(CoreRetrieveViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+class UpdateUserProfile(CoreUpdateViewSet):
+    model = UserProfile
+    queryset = UserProfile.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = "id"
+
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        image = request.FILES.get("image")
+        file_type = data.get("file_type")
+
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if image:
+            self.assign_user_profile(image, instance, file_type)
+        serializer.save()
+        return Response(serializer.data)
+    
+    def assign_user_profile(self, image, instance, file_type):
+        BaseImageFile.objects.filter(user_profile=instance, is_delete=False).update(is_delete=True)
+        BaseImageFile.objects.create(
+            user_profile=instance, 
+            file_url=image,
+            ref_type="user_profile",
+            file_type=file_type
+            )
