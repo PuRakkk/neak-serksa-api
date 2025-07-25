@@ -129,7 +129,7 @@ class GetUserInfoView(CoreRetrieveViewSet):
     model = User
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
     lookup_field = "email"
 
     def retrieve(self, request, *args, **kwargs):
