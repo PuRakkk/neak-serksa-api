@@ -199,7 +199,7 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "auth_user.User"
-# PERMISSION_MODELS= "user_profile"
+PERMISSION_MODELS= "user_profile"
 
 JWT_COOKIE_SECURE = env.bool("JWT_COOKIE_SECURE", default=False)
 JWT_COOKIE_HTTP_ONLY = env.bool("JWT_COOKIE_HTTP_ONLY", default=False)

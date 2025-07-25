@@ -2,17 +2,14 @@ from rest_framework import viewsets
 from rest_framework import generics
 from app.core.permissions import IsPermissionAccess
 from rest_framework.permissions import IsAuthenticated
-from app.core.filter_backends import BasePremissionFilterBackend, CustomBaseFilterBackend
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import OrderingFilter, SearchFilter
 
 
 class CustomFilterBackendMixin:
     filter_backends = [
-        CustomBaseFilterBackend,
         SearchFilter,
         OrderingFilter,
-        BasePremissionFilterBackend,
     ]
 
 
